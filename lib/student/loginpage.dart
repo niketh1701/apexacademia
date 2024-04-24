@@ -1,8 +1,7 @@
-import 'dart:ffi';
+
 
 import 'package:apexacademia/student/bottomnavigat.dart';
-import 'package:apexacademia/student/events.dart';
-import 'package:apexacademia/student/home.dart';
+
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
