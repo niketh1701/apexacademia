@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "713992697363",
+    "project_id": "apex-academia",
+    "storage_bucket": "apex-academia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713992697363:android:c247ea82e7e7368194b1e6",
+        "android_client_info": {
+          "package_name": "com.example.apexacademia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDJgdyU4-FjzrPelqhYsLA3_4LBQFXPk8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

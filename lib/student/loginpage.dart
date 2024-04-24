@@ -1,5 +1,10 @@
+import 'dart:ffi';
+
 import 'package:apexacademia/student/bottomnavigat.dart';
+import 'package:apexacademia/student/events.dart';
 import 'package:apexacademia/student/home.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import 'package:flutter/material.dart';
 
 class loginpage extends StatefulWidget {
@@ -10,6 +15,47 @@ class loginpage extends StatefulWidget {
 }
 
 class _loginpageState extends State<loginpage> {
+  String? storedid;
+  TextEditingController usernamecontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
+  void checkLoginCredentials(){
+    DatabaseReference UsersRef = FirebaseDatabase.instance.ref().child('Users').child('student');
+    String id = usernamecontroller.text;
+    UsersRef
+    .orderByChild('studentid')
+    .equalTo(id)
+    .once()
+    .then((DatabaseEvent event){
+      if( event.snapshot.value != null){
+        print('okk');
+        Map Users = event.snapshot.value as Map;
+        Users.forEach((key, value) {
+          String storedPassword = "";
+          String enteredPassword = "";
+          setState(() {
+            storedPassword = value ['password'];
+            storedid = value ['studentid'];
+            print(storedid);
+            enteredPassword = passwordcontroller.text;
+          });
+          if(storedPassword == enteredPassword){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => bottomnav()));
+          }
+          else{
+            showDialog(context: context, 
+            builder: (BuildContext context){
+          return AlertDialog(
+            title: Text('Login failed'),
+            
+          );
+            });
+          }
+
+        });
+      }
+    });
+  
+  }
   bool value1 = false;
   @override
   Widget build(BuildContext context) {
@@ -30,6 +76,7 @@ class _loginpageState extends State<loginpage> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   label: Text("Academy Id")
+                  
                 ),
               ),
             ),
@@ -60,7 +107,8 @@ class _loginpageState extends State<loginpage> {
                 padding: const EdgeInsets.only(left: 10,right: 10,top: 25),
                 child: ElevatedButton(
                   onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => bottomnav()));
+                    checkLoginCredentials();
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => bottomnav()));
                   }, child: Text("Login",
                   style: TextStyle(fontSize: 16,color: Colors.black)),
                   style: ElevatedButton.styleFrom( foregroundColor: Colors.amber,backgroundColor: const Color.fromARGB(255, 215, 175, 12),
