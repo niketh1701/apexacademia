@@ -18,41 +18,41 @@ class _loginpageState extends State<loginpage> {
   TextEditingController usernamecontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
   void checkLoginCredentials(){
+    print('Done');
     DatabaseReference UsersRef = FirebaseDatabase.instance.ref().child('Users').child('student');
-    String id = usernamecontroller.text;
-    UsersRef
-    .orderByChild('studentid')
-    .equalTo(id)
-    .once()
-    .then((DatabaseEvent event){
-      if( event.snapshot.value != null){
-        print('okk');
-        Map Users = event.snapshot.value as Map;
-        Users.forEach((key, value) {
-          String storedPassword = "";
-          String enteredPassword = "";
-          setState(() {
-            storedPassword = value ['password'];
-            storedid = value ['studentid'];
-            print(storedid);
-            enteredPassword = passwordcontroller.text;
-          });
-          if(storedPassword == enteredPassword){
+   String id ="";
+     String password ="";
+    setState(() {
+    id = usernamecontroller.text;
+    password = passwordcontroller.text; 
+            print('xxxxxxxxxxxxxxxxxxx $id $password');
+    });
+    
+       UsersRef.onValue.listen((event) {
+ 
+      for (final element in event.snapshot.children) {
+        print(event.snapshot.value);
+          Map Users = event.snapshot.value as Map;
+          var Listmap1 =event.snapshot.value as Map;
+          print("hhhhhhhhhhhhhhhhhhhhhhhh $Listmap1");
+          String dataname=Users["studentid"];
+          String datapassword=Users["password"];
+          print('yyyyyyyyyyyyyyyyyyy $datapassword $dataname');
+  
+
+          if( datapassword == password && dataname == id){
+            print('Login Successfull');
             Navigator.push(context, MaterialPageRoute(builder: (context) => bottomnav()));
           }
           else{
-            showDialog(context: context, 
-            builder: (BuildContext context){
-          return AlertDialog(
-            title: Text('Login failed'),
-            
-          );
-            });
+            print("Login Failed");
           }
-
-        });
+    
       }
+
+   
     });
+  
   
   }
   bool value1 = false;
@@ -71,7 +71,8 @@ class _loginpageState extends State<loginpage> {
             Padding(
               padding: const EdgeInsets.only(top: 50,bottom: 30,left: 10,right: 10),
               
-              child: TextField(
+              child: TextField(controller: usernamecontroller,
+
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   label: Text("Academy Id")
@@ -81,7 +82,7 @@ class _loginpageState extends State<loginpage> {
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 5,left: 10,right: 10),
-              child: TextField(
+              child: TextField(controller: passwordcontroller,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   label: Text("Password")
@@ -107,6 +108,7 @@ class _loginpageState extends State<loginpage> {
                 child: ElevatedButton(
                   onPressed: (){
                     checkLoginCredentials();
+                    print('object');
                   // Navigator.push(context, MaterialPageRoute(builder: (context) => bottomnav()));
                   }, child: Text("Login",
                   style: TextStyle(fontSize: 16,color: Colors.black)),
@@ -133,4 +135,20 @@ class _loginpageState extends State<loginpage> {
      
     );
   }
+}
+class UserModel {
+  String? studentid;
+  int? password;
+
+  UserModel({this.studentid, this.password});
+
+  UserModel.fromJson(Map<dynamic, dynamic> json) {
+    studentid = json['studentid'];
+    password = json['password'];
+  }
+
+  Map<dynamic, dynamic> toJson() => {
+        'studentid': studentid,
+        'password': password,
+      };
 }

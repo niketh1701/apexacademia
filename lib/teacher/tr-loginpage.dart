@@ -1,6 +1,5 @@
-import 'package:apexacademia/student/bottomnavigat.dart';
-import 'package:apexacademia/student/home.dart';
 import 'package:apexacademia/teacher/tr-bottomnavi.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class loginpagetr extends StatefulWidget {
@@ -11,6 +10,47 @@ class loginpagetr extends StatefulWidget {
 }
 
 class _loginpageState extends State<loginpagetr> {
+  String? storedid;
+  TextEditingController usernamecontrollertr = TextEditingController();
+  TextEditingController passwordcontrollertr = TextEditingController();
+  void checkLoginCredentialsteacher(){
+    print('Done');
+    DatabaseReference UsersRef = FirebaseDatabase.instance.ref().child('Users').child('teacher');
+   String id ="";
+   String password ="";
+    setState(() {
+    id = usernamecontrollertr.text;
+    password = passwordcontrollertr.text; 
+            print('xxxxxxxxxxxxxxxxxxx $id $password');
+    });
+    
+       UsersRef.onValue.listen((event) {
+ 
+      for (final element in event.snapshot.children) {
+        print(event.snapshot.value);
+          Map Users = event.snapshot.value as Map;
+          var Listmap1 =event.snapshot.value as Map;
+          print("hhhhhhhhhhhhhhhhhhhhhhhh $Listmap1");
+          String dataname=Users["teacherid"];
+          String datapassword=Users["password"];
+          print('yyyyyyyyyyyyyyyyyyy $datapassword $dataname');
+  
+
+          if( datapassword == password && dataname == id){
+            print('Login Successfull');
+            Navigator.push(context, MaterialPageRoute(builder: (context) => trbottomnav()));
+          }
+          else{
+            print("Login Failed");
+          }
+    
+      }
+
+   
+    });
+  
+  
+  }
   bool value1 = false;
   @override
   Widget build(BuildContext context) {
@@ -27,7 +67,7 @@ class _loginpageState extends State<loginpagetr> {
             Padding(
               padding: const EdgeInsets.only(top: 50,bottom: 30,left: 10,right: 10),
               
-              child: TextField(
+              child: TextField(controller:usernamecontrollertr ,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   label: Text("Academy Id")
@@ -36,7 +76,7 @@ class _loginpageState extends State<loginpagetr> {
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 5,left: 10,right: 10),
-              child: TextField(
+              child: TextField(controller: passwordcontrollertr,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   label: Text("Password")
@@ -61,7 +101,8 @@ class _loginpageState extends State<loginpagetr> {
                 padding: const EdgeInsets.only(left: 10,right: 10,top: 25),
                 child: ElevatedButton(
                   onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => trbottomnav()));
+                    checkLoginCredentialsteacher();
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => trbottomnav()));
                   }, child: Text("Login",
                   style: TextStyle(fontSize: 16,color: Colors.black)),
                   style: ElevatedButton.styleFrom( foregroundColor: Colors.amber,backgroundColor: const Color.fromARGB(255, 215, 175, 12),

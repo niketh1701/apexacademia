@@ -1,4 +1,5 @@
 
+import 'package:apexacademia/student/asignmentupload.dart';
 import 'package:flutter/material.dart';
 
 
@@ -60,6 +61,12 @@ class _sAssignmentsubState extends State<sAssignmentsub> {
                   padding: const EdgeInsets.only(left: 15, right: 15),
                   child: InkWell(
                     onTap: () {
+                      if(index == 0){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => uploadassign()));
+                      }
+                      else if(index== 2){
+                         Navigator.push(context, MaterialPageRoute(builder: (context) => uploadassign()));
+                      }
                      // Navigator.push(context, MaterialPageRoute(builder: (context) => AssignmentUpload(),));
                     },
                     child: Container(
